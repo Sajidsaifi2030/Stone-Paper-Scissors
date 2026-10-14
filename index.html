@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stone Paper Scissors</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    font-family: Arial, sans-serif;
+    color: white;
+    background: linear-gradient(135deg, #081426, #172554);
+}
+
+.game {
+    width: 100%;
+    max-width: 420px;
+    padding: 25px 18px;
+    text-align: center;
+    background: #10213b;
+    border: 1px solid #285078;
+    border-radius: 22px;
+    box-shadow: 0 0 25px #008cff40;
+}
+
+h1 {
+    color: #60a5fa;
+    font-size: 26px;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    color: #cbd5e1;
+    margin-bottom: 22px;
+}
+
+.scores {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+.score-box {
+    flex: 1;
+    padding: 15px 5px;
+    background: #09172a;
+    border: 1px solid #285078;
+    border-radius: 12px;
+}
+
+.score-box h3 {
+    font-size: 14px;
+    color: #bfdbfe;
+}
+
+.score-box p {
+    color: #facc15;
+    font-size: 32px;
+    font-weight: bold;
+    margin-top: 8px;
+}
+
+#status {
+    color: #facc15;
+    font-size: 19px;
+    min-height: 25px;
+}
+
+.choices {
+    display: flex;
+    gap: 10px;
+    margin: 22px 0;
+}
+
+.choice {
+    flex: 1;
+    padding: 15px 5px;
+    font-size: 38px;
+    background: #162a45;
+    border: 2px solid #334155;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+.choice:hover {
+    transform: translateY(-5px);
+    border-color: #38bdf8;
+    box-shadow: 0 0 18px #38bdf8;
+}
+
+#result {
+    font-size: 23px;
+    margin: 15px 0;
+    min-height: 28px;
+}
+
+#details {
+    color: #cbd5e1;
+    font-size: 14px;
+    min-height: 24px;
+    line-height: 1.6;
+}
+
+.reset {
+    width: 100%;
+    margin-top: 22px;
+    padding: 13px;
+    background: #ef4444;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.reset:hover {
+    background: #dc2626;
+}
+
+/* Win, lose and draw lights */
+#light {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0;
+}
+
+#light.active {
+    z-index: 5;
+    opacity: 1;
+    animation: flash 0.6s ease-in-out 4;
+}
+
+#light.win {
+    background: radial-gradient(circle, #22ff8840, transparent 70%);
+    box-shadow: inset 0 0 100px #22ff8880;
+}
+
+#light.lose {
+    background: radial-gradient(circle, #ff334440, transparent 70%);
+    box-shadow: inset 0 0 100px #ff334480;
+}
+
+#light.draw {
+    background: radial-gradient(circle, #ffdd4440, transparent 70%);
+    box-shadow: inset 0 0 100px #ffdd4480;
+}
+
+@keyframes flash {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 1; }
+}
+
+/* Fireworks celebration */
+#fireworks {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.particle {
+    position: absolute;
+    top: -20px;
+    width: 8px;
+    height: 14px;
+    border-radius: 2px;
+    animation: fall 2.5s linear forwards;
+}
+
+@keyframes fall {
+    to {
+        transform: translateY(110vh) rotate(720deg);
+        opacity: 0;
+    }
+}
+
+.footer {
+    color: #94a3b8;
+    font-size: 12px;
+    margin-top: 18px;
+}
+
+@media (max-width: 350px) {
+    h1 { font-size: 22px; }
+    .choice { font-size: 30px; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="game">
+    <h1>✊ Stone Paper Scissors ✌️</h1>
+    <p class="subtitle">Play against the Computer!</p>
+
+    <div class="scores">
+        <div class="score-box">
+            <h3>YOU</h3>
+            <p id="userScore">0</p>
+        </div>
+
+        <div class="score-box">
+            <h3>COMPUTER</h3>
+            <p id="computerScore">0</p>
+        </div>
+    </div>
+
+    <h3 id="status">Choose your move!</h3>
+
+    <div class="choices">
+        <button class="choice" data-choice="stone"
+                aria-label="Stone">✊</button>
+
+        <button class="choice" data-choice="paper"
+                aria-label="Paper">✋</button>
+
+        <button class="choice" data-choice="scissors"
+                aria-label="Scissors">✌️</button>
+    </div>
+
+    <h2 id="result">Let's Play! 🎮</h2>
+
+    <p id="details">
+        Stone beats Scissors. Paper beats Stone.
+    </p>
+
+    <button class="reset" id="reset">🔄 Reset Game</button>
+
+    <p class="footer">
+        Made with ❤️ using HTML, CSS & JavaScript
+    </p>
+</div>
+
+<div id="light"></div>
+<div id="fireworks"></div>
+
+<script>
+const choices = document.querySelectorAll(".choice");
+const userScoreText = document.getElementById("userScore");
+const computerScoreText = document.getElementById("computerScore");
+const statusText = document.getElementById("status");
+const resultText = document.getElementById("result");
+const detailsText = document.getElementById("details");
+const light = document.getElementById("light");
+const fireworks = document.getElementById("fireworks");
+const resetBtn = document.getElementById("reset");
+
+const emojis = {
+    stone: "✊",
+    paper: "✋",
+    scissors: "✌️"
+};
+
+let userScore = 0;
+let computerScore = 0;
+
+choices.forEach(button => {
+    button.addEventListener("click", () => {
+        playGame(button.dataset.choice);
+    });
+});
+
+function playGame(userChoice) {
+    const options = ["stone", "paper", "scissors"];
+
+    const computerChoice =
+        options[Math.floor(Math.random() * options.length)];
+
+    clearEffects();
+
+    statusText.textContent = "Result of this round:";
+
+    detailsText.textContent =
+        `You chose ${emojis[userChoice]} | Computer chose ${emojis[computerChoice]}`;
+
+    if (userChoice === computerChoice) {
+        resultText.textContent = "🤝 IT'S A DRAW!";
+        resultText.style.color = "#facc15";
+        showLight("draw");
+
+    } else if (
+        (userChoice === "stone" && computerChoice === "scissors") ||
+        (userChoice === "paper" && computerChoice === "stone") ||
+        (userChoice === "scissors" && computerChoice === "paper")
+    ) {
+        userScore++;
+        userScoreText.textContent = userScore;
+
+        resultText.textContent = "🎉 YOU WIN!";
+        resultText.style.color = "#4ade80";
+
+        showLight("win");
+        celebrate();
+
+    } else {
+        computerScore++;
+        computerScoreText.textContent = computerScore;
+
+        resultText.textContent = "😢 COMPUTER WINS!";
+        resultText.style.color = "#f87171";
+
+        showLight("lose");
+    }
+}
+
+function showLight(type) {
+    light.className = "";
+    void light.offsetWidth;
+    light.className = "active " + type;
+}
+
+function celebrate() {
+    const colors = [
+        "#22ff88", "#38bdf8", "#facc15",
+        "#fb7185", "#c084fc", "#ffffff"
+    ];
+
+    for (let i = 0; i < 100; i++) {
+        const particle = document.createElement("div");
+        particle.className = "particle";
+
+        particle.style.left = Math.random() * 100 + "%";
+        particle.style.backgroundColor =
+            colors[Math.floor(Math.random() * colors.length)];
+
+        particle.style.animationDelay =
+            Math.random() * 1.2 + "s";
+
+        fireworks.appendChild(particle);
+    }
+
+    setTimeout(() => {
+        fireworks.innerHTML = "";
+    }, 4000);
+}
+
+function clearEffects() {
+    light.className = "";
+    fireworks.innerHTML = "";
+}
+
+resetBtn.addEventListener("click", () => {
+    userScore = 0;
+    computerScore = 0;
+
+    userScoreText.textContent = "0";
+    computerScoreText.textContent = "0";
+
+    statusText.textContent = "Choose your move!";
+    resultText.textContent = "Let's Play! 🎮";
+    resultText.style.color = "#ffffff";
+
+    detailsText.textContent =
+        "Stone beats Scissors. Paper beats Stone.";
+
+    clearEffects();
+});
+</script>
+
+</body>
+</html>
